@@ -1,0 +1,28 @@
+{
+  "_id": ObjectId(
+  "55c89cf7093a0c0fd69c6526"
+  ),
+  "properties": {
+    "text": "The best TEA'ngs in life are free! \nThank you @yo_gc! \n#koi #milktea #tgif",
+    "userID": "insta216141641",
+    "userName": "jess_alarana",
+    "day": "03",
+    "month": "07",
+    "year": "2015",
+    "hour": "17",
+    "minute": "21",
+    "second": "40",
+    "source": "instagram",
+    "sentiment": "positive",
+    "sentiStrings": "best free! \nThank ",
+    "labelledSentiment": "positive",
+    "crowder": "admin"
+  },
+  "coordinate": {
+    "type": "Point",
+    "coordinates": [
+      103.740123287,
+      1.335298682
+    ]
+  }
+}
