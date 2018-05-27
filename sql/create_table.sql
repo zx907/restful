@@ -19,7 +19,7 @@ CREATE TABLE properties_tbl (
 CREATE TABLE coordinate_tbl (
 --   id SERIAL PRIMARY KEY,
   users_tbl_id INTEGER REFERENCES users_tbl (id) ON DELETE CASCADE,
-  coordinate POINT
+  coordinate POINT -- not support by sqlalchemy, need to define adapter if used
 );
 
 CREATE TABLE sessions_tbl (

@@ -1,4 +1,0 @@
-CREATE TABLE users_tbl (
-  id SERIAL PRIMARY KEY,
-  _id VARCHAR(32) NOT NULL
-);

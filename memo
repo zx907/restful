@@ -1,0 +1,2 @@
+Since there's geometry point data type in json dataset,which is not supported
+by sqlalchemy, I have to user psycopg2 native for database connection
