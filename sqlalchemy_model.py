@@ -10,6 +10,7 @@ class Itemids(db.Model):
     properties = db.relationship('Properties', uselist=False, backref='itemids')
     coordinates = db.relationship('Coordinate', uselist=False, backref='itemids', cascade="delete")
 
+    # Represent class in dictionary foramt
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
