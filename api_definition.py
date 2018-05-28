@@ -5,7 +5,10 @@ from flask.json import jsonify
 from flask_restful import Resource
 
 from json_raw_string_parser import get_json_obj_list
-from sqlalchemy_model import db, User, Properties, Coordinate
+from sqlalchemy_model import db, ItemIds, Properties, Coordinate, Users, Sessions
+
+from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
 
 # Add a raw json list text data (from test.json) to database
 class NewRecordApi(Resource):
@@ -52,22 +55,22 @@ class NewRecordApi(Resource):
             db.session.close()
 
 # Query user table with _id (or id?)
-class UserApi(Resource):
+class ItemIdsApi(Resource):
     def get(self, _id):
         """GET method to return data about user id and _id"""
-        user = User.query.filter_by(_id=_id).first()
-        if user is None:
+        item_ids = ItemIds.query.filter_by(_id=_id).first()
+        if item_ids is None:
             return 1
-        return jsonify(user.to_dict())
+        return jsonify(item_ids.to_dict())
 
     def put(self, _id):
         """PUT method to update user table with json format payload"""
-        user = User.query.filter_by(_id=_id).first()
+        item_ids = ItemIds.query.filter_by(_id=_id).first()
         req_data_dict = json.loads(request.data)
         print(req_data_dict)
         for k, v in req_data_dict.items():
-            setattr(user, k, v)
-        return jsonify(user.to_dict())
+            setattr(item_ids, k, v)
+        return jsonify(item_ids.to_dict())
 
     def delete(self, _id):
         """DELETE method to remove one record from user table
@@ -75,8 +78,8 @@ class UserApi(Resource):
         will also remove related record from properties table and coordinate table.
         """
         try:
-            user = User.query.filter_by(_id=_id).first()
-            db.session.delete(user)
+            item_ids = ItemIds.query.filter_by(_id=_id).first()
+            db.session.delete(item_ids)
             db.session.commit()
             return 0
         except:
@@ -142,3 +145,35 @@ class CoordinateApi(Resource):
             db.session.close()
 
 
+class UserApi(Resource):
+    def get(self, username, pwd):
+        user = Users.query.filter(username=username).first()
+        if user and user.verify_password(pwd):
+            token = secrets. toekn_hex(32)
+            try:
+                user_session = Sessions(token=token)
+                db.session.add(user_session)
+                return secrets.toekn_hex(32)
+            except Exception as e:
+                db.session.rollback()
+                return e
+            finally:
+                db.session.close()
+        else:
+            return "Cannot find this user info"
+
+    # Assume that user send in registration request with json format e.g.{"username":"uname", "password":"pwd"}
+    def post(self):
+        try:
+            data = json.loads(request.data)['username']
+            user = Users(username=data['username'])
+            user.password_hash = user.hash_password(data['password'])
+            db.session.add(user)
+            db.session.commit()
+            return "Register successfully"
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            return "registration failed"
+        finally:
+            db.session.close()

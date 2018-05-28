@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 
 from sqlalchemy_model import db
-from api_definition import UserApi, PropertiesApi, CoordinateApi, NewRecordApi
+from api_definition import ItemIdsApi, PropertiesApi, CoordinateApi, NewRecordApi
 
 
 def create_app():
@@ -18,7 +18,7 @@ def create_app():
 app = create_app()
 
 api = Api(app)
-api.add_resource(UserApi, '/api/user/<string:_id>')
+api.add_resource(ItemIdsApi, '/api/user/<string:_id>')
 api.add_resource(PropertiesApi, '/api/properties/<int:id>')
 api.add_resource(CoordinateApi, '/api/coordinate/<int:id>')
 api.add_resource(NewRecordApi, '/api/newrecord/')

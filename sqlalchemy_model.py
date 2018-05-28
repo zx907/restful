@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class ItemIds(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _id = db.Column(db.String(32), nullable=False)
     properties = db.relationship('Properties', uselist=False, backref='user')
@@ -15,7 +16,7 @@ class User(db.Model):
 
 class Properties(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    users_tbl_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    itemids_tbl_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     _text = db.Column(db.Text)
     userID = db.Column(db.String(32))
     userName = db.Column(db.String(32))
@@ -28,13 +29,13 @@ class Properties(db.Model):
 
     def to_dict(self):
         ret_val = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        ret_val.pop('users_tbl_id')
+        ret_val.pop('itemids_tbl_id')
         return ret_val
 
 
 class Coordinate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    users_tbl_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    itemids_tbl_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     latitude = db.Column(db.Float)
     longtitude = db.Column(db.Float)
 
@@ -47,9 +48,15 @@ class Coordinate(db.Model):
 class Sessions(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.TEXT, nullable=False)
-    users_tbl_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def to_dict(self):
-        ret_val = {c.name: getattr(self, c.name) for c in self.__table__.columns}
-        ret_val.pop('users_tbl_id')
-        return ret_val
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(32), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+
+    def hash_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        check_password_hash(self.password_hash, password)
