@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from prep.jsparse import get_json_obj_list
-from sqlalchemy_model import User, Properties, Coordinate
+from sqlalchemy_model import Itemids, Properties, Coordinate
 from datetime import datetime
 
 engine = create_engine('postgresql://user:123456@localhost/test')
@@ -36,11 +36,9 @@ for json_obj in json_obj_list:
         coordinate = Coordinate(latitude=float(json_obj['coordinate']['coordinates'][0]),
                                 longtitude=float(json_obj['coordinate']['coordinates'][1]))
 
+        item = Itemids(_id=json_obj['_id'], properties=properties, coordinates=coordinate)
 
-        user = User(_id = json_obj['_id'], properties=properties, coordinates=coordinate)
-
-
-        session.add(user)
+        session.add(item)
         session.add(properties)
         session.add(coordinate)
         session.commit()

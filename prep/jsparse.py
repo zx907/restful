@@ -6,7 +6,7 @@ import json
 import re
 
 def get_json_obj_list():
-    with open(r'C:\Users\Xu\PycharmProjects\RestfulService\static\test1.json', 'rb') as f:
+    with open(r'D:\Codes\restful\static\test1.json', 'rb') as f:
         s = f.read().decode()
 
         s = re.sub(r'ObjectId\(\s*(\"[\d\w]+\")\s*\)', r"\1", s)
@@ -34,6 +34,6 @@ def get_json_obj_list():
             json_string += line
     return json_list
 
-jj = get_json_obj_list()
-for j in jj:
-    print(j)
+# jj = get_json_obj_list()
+# for j in jj:
+#     print(j)
